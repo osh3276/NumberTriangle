@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -41,7 +42,6 @@ public class NumberTriangle {
     public void setLeft(NumberTriangle left) {
         this.left = left;
     }
-
 
     public void setRight(NumberTriangle right) {
         this.right = right;
@@ -88,7 +88,6 @@ public class NumberTriangle {
      *
      */
     public int retrieve(String path) {
-        // TODO implement this method
         return -1;
     }
 
@@ -114,31 +113,36 @@ public class NumberTriangle {
 
         // will need to return the top of the NumberTriangle,
         // so might want a variable for that.
-        NumberTriangle top = null;
+        ArrayList<ArrayList<NumberTriangle>> nodes = new ArrayList<>();
 
-        String line = br.readLine();
-        while (line != null) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            ArrayList<NumberTriangle> row = new ArrayList<>();
+            for (String i : line.trim().split(" ")) {
+                row.add(new NumberTriangle(Integer.parseInt(i)));
+            }
+            nodes.add(row);
+        }
 
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
-
-            // TODO process the line
-
-            //read the next line
-            line = br.readLine();
+        for (int r = 0; r < nodes.size() - 1; r++) {
+            for (int c = 0; c < nodes.get(r).size(); c++) {
+                nodes.get(r).get(c).setLeft(nodes.get(r+1).get(c));
+                nodes.get(r).get(c).setRight(nodes.get(r+1).get(c+1));
+            }
         }
         br.close();
-        return top;
+        return nodes.get(0).get(0);
     }
 
     public static void main(String[] args) throws IOException {
 
         NumberTriangle mt = NumberTriangle.loadTriangle("input_tree.txt");
+        System.out.println(mt.getRoot());
 
         // [not for credit]
         // you can implement NumberTriangle's maxPathSum method if you want to try to solve
         // Problem 18 from project Euler [not for credit]
         mt.maxSumPath();
-        System.out.println(mt.getRoot());
+        // System.out.println(mt.getRoot());
     }
 }
